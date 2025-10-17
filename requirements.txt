@@ -1,0 +1,22 @@
+# Core dependencies for subtitle translation
+openai>=1.0.0
+python-dotenv>=1.0.0
+tqdm>=4.65.0
+
+# SRT subtitle parsing and manipulation
+srt>=3.5.0
+
+# Note: The following are part of Python standard library and don't need to be installed:
+# - os
+# - sys
+# - logging
+# - typing
+# - tkinter (usually comes with Python installation)
+# - json
+# - re
+# - time
+# - argparse
+# - subprocess
+# - datetime
+# - pickle
+# - pathlib
