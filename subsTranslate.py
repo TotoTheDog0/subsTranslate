@@ -933,7 +933,7 @@ def translate_all_srt_in_folder(folder_path: str, output_folder: str,
         config_manager (TranslationConfigManager): Manager containing translation configurations
         chunk_size (int, optional): Number of subtitles to process in each chunk
         clean_subtitles (bool, optional): Whether to clean subtitles before translation
-        replace_subtitles (bool, optional): Whether to replace text patterns before translation
+        replace_subtitles (bool, optional): Whether to replace text patterns after translation
         temperature (float, optional): Temperature for translation (0.4-1.2)
     """
     try:
@@ -966,7 +966,7 @@ def translate_all_srt_in_folder(folder_path: str, output_folder: str,
         if clean_subtitles:
             logger.info("Subtitle cleaning is enabled - files will be cleaned before translation")
         if replace_subtitles:
-            logger.info("Text pattern replacement is enabled - patterns from subs_replace.json will be applied before translation")
+            logger.info("Text pattern replacement is enabled - patterns from subs_replace.json will be applied after translation")
 
         for i, filename in enumerate(srt_files, start=1):
             # Skip if file was already completed
