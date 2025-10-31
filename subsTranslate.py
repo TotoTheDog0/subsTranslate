@@ -342,7 +342,7 @@ def add_seconds_to_timestamp(timestamp: str, seconds: int) -> str:
     
     return format_timestamp(h, m, s, ms)
 
-def write_srt(file_path: str, subtitles: List[Dict[str, str]], model_name: str = "DeepSeek v3 0324") -> None:
+def write_srt(file_path: str, subtitles: List[Dict[str, str]], model_name: str = "DeepSeek v3 0324", include_credits: bool = True) -> None:
     """
     Write translated subtitles back to an SRT file.
 
@@ -350,6 +350,7 @@ def write_srt(file_path: str, subtitles: List[Dict[str, str]], model_name: str =
         file_path (str): Path to the output SRT file.
         subtitles (List[Dict[str, str]]): List of subtitle blocks to write.
         model_name (str): Name of the model used for translation (default: "DeepSeek v3 0324" for backwards compatibility).
+        include_credits (bool): Whether to include the credits subtitle at the end (default: True).
     """
     try:
         with open(file_path, "w", encoding="utf-8") as file:
@@ -358,15 +359,15 @@ def write_srt(file_path: str, subtitles: List[Dict[str, str]], model_name: str =
                 file.write(f"{subtitle['index']}\n")
                 file.write(f"{subtitle['timestamps']}\n")
                 file.write(f"{subtitle['text'].strip()}\n\n")
-            
-            # Add the final subtitle with credits
-            if subtitles:
+
+            # Add the final subtitle with credits if requested
+            if subtitles and include_credits:
                 # Get the last timestamp and add 5 seconds
                 last_timestamp = subtitles[-1]['timestamps']
                 end_time = last_timestamp.split(' --> ')[1]  # Get the end time of last subtitle
                 new_start_time = add_seconds_to_timestamp(end_time, 1)  # Start 1 second after last subtitle
                 new_end_time = add_seconds_to_timestamp(new_start_time, 5)  # Show for 5 seconds
-                
+
                 # Write the final subtitle
                 file.write(f"{len(subtitles) + 1}\n")
                 file.write(f"{new_start_time} --> {new_end_time}\n")
@@ -830,8 +831,8 @@ def translate_srt_file_with_context(input_file: str, output_file: str,
                     progress.current_file_progress = i // chunk_size
                     progress.save_progress()
 
-                    # Save intermediate results to temporary file
-                    write_srt(temp_output_file, subtitles)
+                    # Save intermediate results to temporary file (without credits)
+                    write_srt(temp_output_file, subtitles, include_credits=False)
 
                 pbar.update(len(chunk))
 
@@ -853,8 +854,8 @@ def translate_srt_file_with_context(input_file: str, output_file: str,
             temp_translated_file = output_file + '.translated.tmp'
             temp_replaced_file = temp_translated_file + '.replaced'
             try:
-                # Save translated file before replacement
-                write_srt(temp_translated_file, subtitles)
+                # Save translated file before replacement (without credits as this is temporary)
+                write_srt(temp_translated_file, subtitles, include_credits=False)
 
                 # Apply replacements - this will raise an exception if it fails
                 subs_replacer.replace_srt_file(temp_translated_file, temp_replaced_file)
@@ -1373,8 +1374,8 @@ def process_slowed_srt_files(folder_path: str) -> None:
             for i, sub in enumerate(subtitles[:3]):
                 logger.info(f"Subtitle {i+1}: {sub['timestamps']}")
             
-            # Write the adjusted subtitles back to the same file
-            write_srt(input_file, subtitles)
+            # Write the adjusted subtitles back to the same file (without credits - this is an input file)
+            write_srt(input_file, subtitles, include_credits=False)
             logger.info(f"Successfully adjusted speed for file: {filename}")
             
         except Exception as e:
