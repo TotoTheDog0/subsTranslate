@@ -35,6 +35,7 @@ OPENROUTER_MODEL_DEEPSEEKV3FREE = os.getenv("OPENROUTER_MODEL_DEEPSEEKV3FREE")
 OPENROUTER_MODEL_DEEPSEEKV30324 = os.getenv("OPENROUTER_MODEL_DEEPSEEKV30324")
 OPENROUTER_MODEL_DEEPSEEKV32 = os.getenv("OPENROUTER_MODEL_DEEPSEEKV32")
 OPENROUTER_MODEL_GEMINI25FLASH = os.getenv("OPENROUTER_MODEL_GEMINI25FLASH")
+OPENROUTER_MODEL_GROK41FAST = os.getenv("OPENROUTER_MODEL_GROK41FAST")
 
 CHUNK_SIZE = 100  # Number of subtitles to process in each chunk
 CONFIG_FILE = "config.json"  # File to store the last used folder path
@@ -1079,6 +1080,7 @@ def select_translation_configs() -> Tuple[TranslationConfigManager, bool, bool, 
         ("OpenRouter", "deepseek-v3.2-exp", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_DEEPSEEKV32),  # Added new model
         ("OpenRouter", "Gemini-2.5-flash", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_GEMINI25FLASH),  # Added new model      
         ("Deepseek", "deepseek-chat", DEEPSEEK_API_KEY, DEEPSEEK_API_URL, DEEPSEEK_MODEL_CHAT),
+        ("OpenRouter", "Grok-4.1-Fast", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_GROK41FAST),
     ]
     
     # Create frames
