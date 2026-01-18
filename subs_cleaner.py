@@ -106,7 +106,7 @@ def clean_subtitles(srt_content: str, garbage_list: List[str]) -> str:
 def clean_srt_file(input_file: str, output_file: str, garbage_list: Optional[List[str]] = None) -> None:
     """
     Clean an SRT file and save the results.
-    
+
     Args:
         input_file (str): Path to input SRT file
         output_file (str): Path to save cleaned SRT file
@@ -114,17 +114,53 @@ def clean_srt_file(input_file: str, output_file: str, garbage_list: Optional[Lis
     """
     if garbage_list is None:
         garbage_list = load_garbage_list()
-        
+
     try:
         with open(input_file, 'r', encoding='utf-8') as f:
             srt_content = f.read()
     except Exception as e:
         raise RuntimeError(f"Failed to read input file {input_file}: {e}")
-        
+
     cleaned_content = clean_subtitles(srt_content, garbage_list)
-    
+
     try:
         with open(output_file, 'w', encoding='utf-8') as f:
             f.write(cleaned_content)
     except Exception as e:
-        raise RuntimeError(f"Failed to write output file {output_file}: {e}") 
+        raise RuntimeError(f"Failed to write output file {output_file}: {e}")
+
+
+if __name__ == "__main__":
+    import argparse
+    import sys
+
+    parser = argparse.ArgumentParser(
+        description="Clean SRT subtitle files by removing hallucinations, repetitions, and garbage text",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  python subs_cleaner.py input.srt output.srt
+  python subs_cleaner.py input.srt output.srt --garbage-list custom_garbage.json
+        """
+    )
+
+    parser.add_argument("input_file", help="Path to input SRT file")
+    parser.add_argument("output_file", help="Path to output SRT file")
+    parser.add_argument(
+        "--garbage-list",
+        help="Path to custom garbage list JSON file (optional, defaults to garbage_list.json in script directory)"
+    )
+
+    args = parser.parse_args()
+
+    try:
+        garbage_list = None
+        if args.garbage_list:
+            garbage_list = load_garbage_list(args.garbage_list)
+
+        clean_srt_file(args.input_file, args.output_file, garbage_list)
+        print(f"Successfully cleaned subtitles: {args.input_file} -> {args.output_file}")
+
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
