@@ -31,7 +31,7 @@ DEEPSEEK_API_URL = os.getenv("DEEPSEEK_ENDPOINT")
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 OPENROUTER_API_URL = os.getenv("OPENROUTER_ENDPOINT")
 DEEPSEEK_MODEL_CHAT = os.getenv("DEEPSEEK_MODEL_CHAT")
-OPENROUTER_MODEL_DEEPSEEKV30324 = os.getenv("OPENROUTER_MODEL_DEEPSEEKV30324")
+OPENROUTER_MODEL_GPTOSS120B = os.getenv("OPENROUTER_MODEL_GPTOSS120B")
 OPENROUTER_MODEL_DEEPSEEKV32 = os.getenv("OPENROUTER_MODEL_DEEPSEEKV32")
 OPENROUTER_MODEL_GEMINI25FLASH = os.getenv("OPENROUTER_MODEL_GEMINI25FLASH")
 OPENROUTER_MODEL_DEEPSEEKV32EXP = os.getenv("OPENROUTER_MODEL_DEEPSEEKV32EXP")
@@ -171,6 +171,7 @@ def translate_text_with_context(text_chunk: str, config_manager: TranslationConf
                             - Preserve explicit language and sexual/fetish terms such as bukkake, gokkun, nakadashi, kimoi-ota, mesu.
                             2. Contextual Awareness:
                             - For Chinese: Translate naturally while preserving tone and context
+                            - For German: Translate naturally while preserving tone and context
                             - For Japanese: Correct Whisper errors using AV context (e.g., 'ラーン' --> 'ザーン','フェラー' --> 'フェラ', 'マンゴ' --> 'マンコ')
                             - Fix misheard words while keeping original meaning.
                             3. Jargon Retention:
@@ -1075,7 +1076,7 @@ def select_translation_configs() -> Tuple[TranslationConfigManager, bool, bool, 
     # Available configurations
     available_configs = [
         ("OpenRouter", "deepseek-v3.2", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_DEEPSEEKV32),
-        ("OpenRouter", "deepseek-chat-v3-0324", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_DEEPSEEKV30324),
+        ("OpenRouter", "OpenAI-gpt-oss-120b", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_GPTOSS120B),
         ("OpenRouter", "deepseek-v3.2-exp", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_DEEPSEEKV32EXP),
         ("OpenRouter", "Gemini-2.5-flash", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_GEMINI25FLASH),      
         ("Deepseek", "deepseek-chat", DEEPSEEK_API_KEY, DEEPSEEK_API_URL, DEEPSEEK_MODEL_CHAT),
