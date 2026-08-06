@@ -31,10 +31,10 @@ DEEPSEEK_API_URL = os.getenv("DEEPSEEK_ENDPOINT")
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 OPENROUTER_API_URL = os.getenv("OPENROUTER_ENDPOINT")
 DEEPSEEK_MODEL_CHAT = os.getenv("DEEPSEEK_MODEL_CHAT")
-OPENROUTER_MODEL_GPTOSS120B = os.getenv("OPENROUTER_MODEL_GPTOSS120B")
-OPENROUTER_MODEL_DEEPSEEKV32 = os.getenv("OPENROUTER_MODEL_DEEPSEEKV32")
+OPENROUTER_MODEL_DEEPSEEK4FLASH = os.getenv("OPENROUTER_MODEL_DEEPSEEK4FLASH")
 OPENROUTER_MODEL_GEMINI3FLASH = os.getenv("OPENROUTER_MODEL_GEMINI3FLASH")
-OPENROUTER_MODEL_DEEPSEEKV32EXP = os.getenv("OPENROUTER_MODEL_DEEPSEEKV32EXP")
+OPENROUTER_MODEL_DEEPSEEKV32 = os.getenv("OPENROUTER_MODEL_DEEPSEEKV32")
+OPENROUTER_MODEL_GPTOSS120B = os.getenv("OPENROUTER_MODEL_GPTOSS120B")
 
 CHUNK_SIZE = 100  # Number of subtitles to process in each chunk
 CONFIG_FILE = "config.json"  # File to store the last used folder path
@@ -343,14 +343,14 @@ def add_seconds_to_timestamp(timestamp: str, seconds: int) -> str:
     
     return format_timestamp(h, m, s, ms)
 
-def write_srt(file_path: str, subtitles: List[Dict[str, str]], model_name: str = "DeepSeek v3 0324", include_credits: bool = True) -> None:
+def write_srt(file_path: str, subtitles: List[Dict[str, str]], model_name: str = "gemini-3-flash-preview", include_credits: bool = True) -> None:
     """
     Write translated subtitles back to an SRT file.
 
     Args:
         file_path (str): Path to the output SRT file.
         subtitles (List[Dict[str, str]]): List of subtitle blocks to write.
-        model_name (str): Name of the model used for translation (default: "DeepSeek v3 0324" for backwards compatibility).
+        model_name (str): Name of the model used for translation (default: "gemini-3-flash-preview" for backwards compatibility).
         include_credits (bool): Whether to include the credits subtitle at the end (default: True).
     """
     try:
@@ -1075,10 +1075,10 @@ def select_translation_configs() -> Tuple[TranslationConfigManager, bool, bool, 
     
     # Available configurations
     available_configs = [
+        ("OpenRouter", "deepseek-v4-flash-0731", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_DEEPSEEK4FLASH),
+        ("OpenRouter", "gemini-3-flash-preview", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_GEMINI3FLASH),
         ("OpenRouter", "deepseek-v3.2", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_DEEPSEEKV32),
-        ("OpenRouter", "OpenAI-gpt-oss-120b", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_GPTOSS120B),
-        ("OpenRouter", "deepseek-v3.2-exp", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_DEEPSEEKV32EXP),
-        ("OpenRouter", "Gemini-3-flash-preview", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_GEMINI3FLASH),      
+        ("OpenRouter", "gpt-oss-120b", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_GPTOSS120B),      
         ("Deepseek", "deepseek-chat", DEEPSEEK_API_KEY, DEEPSEEK_API_URL, DEEPSEEK_MODEL_CHAT),
     ]
     
