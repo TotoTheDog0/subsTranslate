@@ -19,8 +19,21 @@ from pathlib import Path
 import subs_cleaner  # Import the new cleaning module
 import subs_replacer  # Import the new replacement module
 
+class SuccessfulHttpResponseFilter(logging.Filter):
+    """Keep successful HTTP response info messages out of the terminal."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        return not (
+            record.levelno == logging.INFO
+            and "HTTP/1.1 200 OK" in record.getMessage()
+        )
+
+
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+for handler in logging.getLogger().handlers:
+    if isinstance(handler, logging.StreamHandler) and not isinstance(handler, logging.FileHandler):
+        handler.addFilter(SuccessfulHttpResponseFilter())
 logger = logging.getLogger(__name__)
 
 load_dotenv()
@@ -30,12 +43,9 @@ DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 DEEPSEEK_API_URL = os.getenv("DEEPSEEK_ENDPOINT")
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 OPENROUTER_API_URL = os.getenv("OPENROUTER_ENDPOINT")
-DEEPSEEK_MODEL_CHAT = os.getenv("DEEPSEEK_MODEL_CHAT")
-OPENROUTER_MODEL_GEMINI37FLASH = os.getenv("OPENROUTER_MODEL_GEMINI37FLASH")
-OPENROUTER_MODEL_DEEPSEEK4FLASH = os.getenv("OPENROUTER_MODEL_DEEPSEEK4FLASH")
-OPENROUTER_MODEL_GEMINI3FLASH = os.getenv("OPENROUTER_MODEL_GEMINI3FLASH")
-OPENROUTER_MODEL_DEEPSEEKV32 = os.getenv("OPENROUTER_MODEL_DEEPSEEKV32")
-OPENROUTER_MODEL_GPTOSS120B = os.getenv("OPENROUTER_MODEL_GPTOSS120B")
+DEEPSEEK_MODEL_FLASH = os.getenv("DEEPSEEK_MODEL_FLASH")
+OPENROUTER_MODEL_GEMINI38FLASH = os.getenv("OPENROUTER_MODEL_GEMINI38FLASH")
+OPENROUTER_MODEL_DEEPSEEK41FLASH = os.getenv("OPENROUTER_MODEL_DEEPSEEK41FLASH")
 
 CHUNK_SIZE = 100  # Number of subtitles to process in each chunk
 CONFIG_FILE = "config.json"  # File to store the last used folder path
@@ -344,14 +354,14 @@ def add_seconds_to_timestamp(timestamp: str, seconds: int) -> str:
     
     return format_timestamp(h, m, s, ms)
 
-def write_srt(file_path: str, subtitles: List[Dict[str, str]], model_name: str = "gemini-3-flash-preview", include_credits: bool = True) -> None:
+def write_srt(file_path: str, subtitles: List[Dict[str, str]], model_name: str = "gemini-3.8-flash", include_credits: bool = True) -> None:
     """
     Write translated subtitles back to an SRT file.
 
     Args:
         file_path (str): Path to the output SRT file.
         subtitles (List[Dict[str, str]]): List of subtitle blocks to write.
-        model_name (str): Name of the model used for translation (default: "gemini-3-flash-preview" for backwards compatibility).
+        model_name (str): Name of the model used for translation (default: "gemini-3.8-flash" for backwards compatibility).
         include_credits (bool): Whether to include the credits subtitle at the end (default: True).
     """
     try:
@@ -882,7 +892,7 @@ def translate_srt_file_with_context(input_file: str, output_file: str,
                     os.remove(temp_replaced_file)
 
         # Determine which model translated the most lines
-        top_model = "DeepSeek v3 0324"  # Default fallback
+        top_model = "Gemini-3.8-flash"  # Default fallback
         if translation_stats:
             max_lines = max(translation_stats.values())
             if max_lines > 0:
@@ -1076,12 +1086,9 @@ def select_translation_configs() -> Tuple[TranslationConfigManager, bool, bool, 
     
     # Available configurations
     available_configs = [
-        ("OpenRouter", "gemini-3.7-flash", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_GEMINI37FLASH),
-        ("OpenRouter", "deepseek-v4-flash-0731", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_DEEPSEEK4FLASH),
-        ("OpenRouter", "gemini-3-flash-preview", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_GEMINI3FLASH),
-        ("OpenRouter", "deepseek-v3.2", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_DEEPSEEKV32),
-        ("OpenRouter", "gpt-oss-120b", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_GPTOSS120B),      
-        ("Deepseek", "deepseek-chat", DEEPSEEK_API_KEY, DEEPSEEK_API_URL, DEEPSEEK_MODEL_CHAT),
+        ("OpenRouter", "gemini-3.8-flash", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_GEMINI38FLASH),
+        ("OpenRouter", "deepseek-v4.1-flash", OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL_DEEPSEEK41FLASH),
+        ("Deepseek", "deepseek-flash", DEEPSEEK_API_KEY, DEEPSEEK_API_URL, DEEPSEEK_MODEL_FLASH),
     ]
     
     # Create frames
