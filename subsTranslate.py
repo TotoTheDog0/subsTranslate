@@ -361,7 +361,7 @@ def write_srt(file_path: str, subtitles: List[Dict[str, str]], model_name: str =
     Args:
         file_path (str): Path to the output SRT file.
         subtitles (List[Dict[str, str]]): List of subtitle blocks to write.
-        model_name (str): Name of the model used for translation (default: "gemini-3.8-flash" for backwards compatibility).
+        model_name (str): Name of the model used for translation (default: "gemini-3.8-flash").
         include_credits (bool): Whether to include the credits subtitle at the end (default: True).
     """
     try:
